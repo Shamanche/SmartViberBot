@@ -1,0 +1,13 @@
+
+==========================================================
+
+POST https://chatapi.viber.com/pa/set_webhook HTTP/1.1
+User-Agent': 'ViberBot-Python/1.0.12'
+Host: chatapi.viber.com
+Content-Length: 141
+
+{
+"url": " https://c415-89-151-179-244.ngrok.io",
+"auth_token": "4e059b9c9227e6d1-55eccfee382b0e6f-43c64473e8c9663c",
+"is_inline": false
+}
