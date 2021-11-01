@@ -167,3 +167,5 @@ apikey.txt
 chromedriver.exe
 ngrok.exe
 /arh
+.env
+webhook.txt
