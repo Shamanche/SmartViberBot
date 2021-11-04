@@ -6,7 +6,6 @@ import threading
 from threading import Thread
 from flask import Flask, request, Response
 
-import viberbot
 from viberbot import Api
 from viberbot.api.bot_configuration import BotConfiguration
 from viberbot.api.messages import VideoMessage

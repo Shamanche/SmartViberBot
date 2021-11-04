@@ -1,0 +1,2 @@
+import viberbot
+print('OK')
