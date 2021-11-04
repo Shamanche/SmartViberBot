@@ -227,8 +227,8 @@ def incoming():
                 answer_text = 'Произошло что-то странное...'
         return answer_text
 
-    if not viber.verify_signature(request.get_data(), request.headers.get('X-Viber-Content-Signature')):
-        return Response(status=403)
+    # if not viber.verify_signature(request.get_data(), request.headers.get('X-Viber-Content-Signature')):
+    #     return Response(status=403)
 
     # this library supplies a simple way to receive a request object
     viber_request = viber.parse_request(request.get_data())
