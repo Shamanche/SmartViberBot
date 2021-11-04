@@ -12,3 +12,6 @@ NAMES = [
     ['сергей', 'сережа', 'сега', 'серый', 'серж', 'серега', 'серёга'],
     ['ирина', 'иринка', 'ира', 'ириночка', 'иринушка', 'ирочка']
 ]
+# Buildpacks for heroku
+# https://github.com/heroku/heroku-buildpack-google-chrome
+# https://github.com/heroku/heroku-buildpack-chromedriver
