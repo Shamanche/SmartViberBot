@@ -254,4 +254,4 @@ if __name__ == "__main__":
         auth_token=VIBER_API_KEY
     ))
     tech_employee_list = get_tech_employee_list()  # получаем данные из Bitrix24
-    app.run(host='0.0.0.0', port=8080, debug=True, use_reloader=False)
+    app.run(host='0.0.0.0', port=443, debug=True, use_reloader=False)
