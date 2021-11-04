@@ -89,7 +89,7 @@ def waiting(sender_id):
     message = TextMessage(text=text)
     viber.send_messages(sender_id, [message])
 
-@app.route('/', method=['GET'])
+@app.route('/', methods=['GET'])
 def inc():
     return "It's OK"
 
