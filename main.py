@@ -6,7 +6,6 @@ import threading
 from threading import Thread
 from flask import Flask, request, Response
 
-import viberbot
 from viberbot import Api
 from viberbot.api.bot_configuration import BotConfiguration
 from viberbot.api.messages import VideoMessage
@@ -24,8 +23,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from dotenv import load_dotenv
-load_dotenv()
+if os.name != 'posix': # для heroku
+    from dotenv import load_dotenv
+    load_dotenv()
 
 URL_BITRIX = BASE_BITRIX_URL + os.environ.get('BITRIX_WEBHOOK_KEY') + '/'
 BITRIX_LOGIN = os.environ.get('BITRIX_LOGIN')
@@ -69,7 +69,6 @@ def get_tech_employee_list():
     employee_tech = [i for i in employee_all if in_tech_department(i)]
     return employee_tech
 
-
 def set_tech_employee_list(sender_id):
     # получает в Bitrix24  список сотрудников
     # сохраняет в глобальной переменной
@@ -82,7 +81,6 @@ def set_tech_employee_list(sender_id):
     viber.send_messages(sender_id, [message])
     return
 
-
 def waiting(sender_id):
     print('Ожидение...')
     time.sleep(30)
@@ -90,7 +88,6 @@ def waiting(sender_id):
     text = 'Ответственный назначен.'
     message = TextMessage(text=text)
     viber.send_messages(sender_id, [message])
-
 
 @app.route('/', methods=['POST'])
 def incoming():
@@ -121,7 +118,7 @@ def incoming():
                 chrome_options.add_argument("--headless")
                 chrome_options.add_argument("--disable-dev-shm-usage")
                 chrome_options.add_argument("--no-sandbox")
-                driver = webdriver.Chrome(executable_path=os.environ.get(
+                browser = webdriver.Chrome(executable_path=os.environ.get(
                     "CHROMEDRIVER_PATH"), chrome_options=chrome_options)
             else:
                 browser = webdriver.Chrome('chromedriver.exe')
@@ -205,7 +202,7 @@ def incoming():
                 answer_text = 'Таких человеков не найдено...'
             elif len(found_employee_list) == 1:
                 responsible = found_employee_list[0]
-                thread_selenium = Thread(target=waiting, name=THREAD_NAME, args=(sender_id,))
+                # thread_selenium = Thread(target=waiting, name=THREAD_NAME, args=(sender_id,))
                 thread_selenium = Thread(target=change_responsible,
                                          name=THREAD_NAME, args=(TEMPLATE_LIST, responsible, sender_id,))
                 if THREAD_NAME in (i.name for i in threading.enumerate()):
@@ -253,4 +250,4 @@ if __name__ == "__main__":
         auth_token=VIBER_API_KEY
     ))
     tech_employee_list = get_tech_employee_list()  # получаем данные из Bitrix24
-    app.run(host='0.0.0.0', port=8080, debug=True, use_reloader=True)
+    app.run(host='0.0.0.0', port=8080, debug=True, use_reloader=False)
