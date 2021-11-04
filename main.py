@@ -131,7 +131,7 @@ def incoming():
             # elem = browser.find_element(By.CSS_SELECTOR, 'Button[data-action="submit"]')
             elem = WebDriverWait(browser, 5).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, 'Button[data-action="submit"]')))
-            time.sleep(3)
+            time.sleep(1)
             elem.click()
 
             elem = WebDriverWait(browser, 15).until(

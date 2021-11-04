@@ -1,2 +1,0 @@
-import viberbot
-print('OK')
