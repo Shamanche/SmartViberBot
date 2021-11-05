@@ -38,6 +38,11 @@ for i in NAMES:
 
 
 app = Flask(__name__)
+viber = Api(BotConfiguration(
+    name='SmartViberBot',
+    avatar='',
+    auth_token=VIBER_API_KEY
+))
 
 
 def get_tech_employee_list():
@@ -248,12 +253,6 @@ def incoming():
 
 
 if __name__ == "__main__":
-    viber = Api(BotConfiguration(
-        name='SmartViberBot',
-        avatar='',
-        auth_token=VIBER_API_KEY
-    ))
     tech_employee_list = get_tech_employee_list()  # получаем данные из Bitrix24
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port, debug=True, use_reloader=False)
-    
