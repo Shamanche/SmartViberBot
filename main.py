@@ -162,14 +162,14 @@ def incoming():
                 # удаляем текущего ответственного
                 responsible = WebDriverWait(browser, 30).until(EC.presence_of_element_located(
                     (By.CSS_SELECTOR, 'div[data-block-name="SE_RESPONSIBLE"]')))
-                responsible.find_element(
-                    By.CSS_SELECTOR, 'span[title="Отменить выбор"]').click()
+                responsible.find_element(By.CSS_SELECTOR, 'span[title="Отменить выбор"]').click()
 
                 # получаем список сотрудников, которых можно назначить ответственным
-                employees = browser.find_element(
-                    By.CLASS_NAME, 'ui-selector-popup-container')
-                employee_list = employees.find_elements(
-                    By.CLASS_NAME, 'ui-selector-item-box')
+                employees = WebDriverWait(browser, 30).until(EC.presence_of_element_located(
+                    (By.CLASS_NAME, 'ui-selector-popup-container')))
+                employees = browser.find_element(By.CLASS_NAME, 'ui-selector-popup-container')
+                
+                employee_list = employees.find_elements(By.CLASS_NAME, 'ui-selector-item-box')
 
                 # находим заданного сотрудника
                 for cur_employee in employee_list:
@@ -177,8 +177,7 @@ def incoming():
                         cur_employee.click()
                         break
 
-                browser.find_element(
-                    By.ID, 'ui-button-panel-save').click()  # сохранить
+                browser.find_element(By.ID, 'ui-button-panel-save').click()  # сохранить
             text = f"Ответственным назначен: {employee['LAST_NAME']} {employee['NAME']}"
         except Exception as err:
             text = repr(err)
