@@ -46,6 +46,7 @@ viber = Api(BotConfiguration(
 
 
 def get_tech_employee_list():
+    print('Запрос списка сотрудников в Bitrix24')
     # получаем список сотрудников тех. отдела
     def in_tech_department(employee):
         # проверка является ли сотрудник сотрдуником тех. отдела
@@ -72,6 +73,8 @@ def get_tech_employee_list():
         return []
     # отбираем сотрудников технического отдела
     employee_tech = [i for i in employee_all if in_tech_department(i)]
+    print('Список сотрудников получен.')
+    print(employee_tech[0])
     return employee_tech
 
 def set_tech_employee_list(sender_id):
@@ -168,7 +171,7 @@ def incoming():
                 employees = WebDriverWait(browser, 30).until(EC.presence_of_element_located(
                     (By.CLASS_NAME, 'ui-selector-popup-container')))
                 employees = browser.find_element(By.CLASS_NAME, 'ui-selector-popup-container')
-                
+
                 employee_list = employees.find_elements(By.CLASS_NAME, 'ui-selector-item-box')
 
                 # находим заданного сотрудника
@@ -204,6 +207,7 @@ def incoming():
             thread_bx24.start()
             answer_text = 'Запрос в Bitrix24 отправлен, подождите.'
         else:
+            print('Ищем сотрудника. Значение tech_employee_list[0]: ',tech_employee_list[0])
             found_employee_list = employee_found_list(
                 tech_employee_list, incoming_text)
             if not found_employee_list:
