@@ -105,7 +105,6 @@ def inc():
 @app.route('/', methods=['POST'])
 def incoming():
     print('---Обработка входящего сообщения.---')
-    print('tech_employee_list: ', tech_employee_list)
     def employee_found_list(employee_list, string_to_find):
         # Возвращает список сотрудников содержащих string_to_find
         # string_to_find может быть имя, фамилия или id
@@ -258,8 +257,5 @@ def incoming():
 
 
 if __name__ == "__main__":
-    print('---App strting.---')
-    
-    print('tech_employee_list: ', tech_employee_list)
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port, debug=True, use_reloader=False)
