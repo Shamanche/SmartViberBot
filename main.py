@@ -36,15 +36,6 @@ SINONIMS = {}
 for i in NAMES:
     SINONIMS.update({}.fromkeys(i, i[0].capitalize()))
 
-
-app = Flask(__name__)
-viber = Api(BotConfiguration(
-    name='SmartViberBot',
-    avatar='',
-    auth_token=VIBER_API_KEY
-))
-
-
 def get_tech_employee_list():
     print('Запрос списка сотрудников в Bitrix24')
     # получаем список сотрудников тех. отдела
@@ -96,6 +87,16 @@ def waiting(sender_id):
     text = 'Ответственный назначен.'
     message = TextMessage(text=text)
     viber.send_messages(sender_id, [message])
+
+
+app = Flask(__name__)
+viber = Api(BotConfiguration(
+    name='SmartViberBot',
+    avatar='',
+    auth_token=VIBER_API_KEY
+))
+tech_employee_list = get_tech_employee_list()  # получаем данные из Bitrix24
+
 
 @app.route('/', methods=['GET'])
 def inc():
@@ -258,7 +259,7 @@ def incoming():
 
 if __name__ == "__main__":
     print('---App strting.---')
-    tech_employee_list = get_tech_employee_list()  # получаем данные из Bitrix24
+    
     print('tech_employee_list: ', tech_employee_list)
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port, debug=True, use_reloader=False)
