@@ -74,7 +74,7 @@ target/
 
 # pyenv
 .python-version
-/env
+/venv
 
 
 
@@ -163,9 +163,7 @@ dmypy.json
 
 # End of https://www.gitignore.io/api/flask,python
 .vscode/launch.json
-apikey.txt
-chromedriver.exe
-ngrok.exe
 /arh
 .env
 webhook.txt
+selenium_test.py
