@@ -119,77 +119,78 @@ def incoming():
         return [i for i in employee_list if is_employee_found(i, string_to_find)]
 
     def change_responsible(template_list, employee, sender_id):
-        # функция меняет ответственного во всех шаблонах тз списка на заданного сотрудника
-        # принимает список шаблонов и сотрудника в формате json
-        # возвращает статус 'OK' или текст ошибки
-        try:
-            id_string = ('https://smartcheb.bitrix24.ru/company/personal/user/'
-                         + employee['ID'] + '/')
-            if os.name == 'posix':
-                chrome_options = webdriver.ChromeOptions()
-                chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-                chrome_options.add_argument("--headless")
-                chrome_options.add_argument("--disable-dev-shm-usage")
-                chrome_options.add_argument("--no-sandbox")
-                browser = webdriver.Chrome(executable_path=os.environ.get(
-                    "CHROMEDRIVER_PATH"), chrome_options=chrome_options)
-            else:
-                browser = webdriver.Chrome('chromedriver.exe')
-            browser.get(URGENT_TASK_TEMPLATE_URL)
-            # elem = browser.find_element(By.ID, 'login')
-            elem = WebDriverWait(browser, 15).until(
-                EC.presence_of_element_located((By.ID, "login")))
-            elem = elem.send_keys(BITRIX_LOGIN)
-            # elem = elem.send_keys('td@21smart.ru')
-            # elem = browser.find_element(By.CSS_SELECTOR, 'Button[data-action="submit"]')
-            elem = WebDriverWait(browser, 5).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, 'Button[data-action="submit"]')))
-            time.sleep(1)
-            elem.click()
+            # функция меняет ответственного во всех шаблонах тз списка на заданного сотрудника
+            # принимает список шаблонов и сотрудника в формате json
+            # возвращает статус 'OK' или текст ошибки
+            try:
+                id_string = ('https://smartcheb.bitrix24.ru/company/personal/user/'
+                    + employee['ID'] + '/')
+                if os.name == 'posix':
+                    options = webdriver.ChromeOptions()
+                    options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+                    options.add_argument("--headless")
+                    options.add_argument("--disable-dev-shm-usage")
+                    options.add_argument("--no-sandbox")
+                    options.add_experimental_option('excludeSwitches', ['enable-logging'])
+                    browser = webdriver.Chrome(executable_path=os.environ.get(
+                        "CHROMEDRIVER_PATH"), options=options)
+                else:
+                    options = webdriver.ChromeOptions()
+                    options.add_experimental_option('excludeSwitches', ['enable-logging'])
+                    browser = webdriver.Chrome('chromedriver.exe', options=options)
+                browser.get(URGENT_TASK_TEMPLATE_URL)
+                elem = WebDriverWait(browser, 15).until(
+                    EC.presence_of_element_located((By.ID, "login")))
+                elem = elem.send_keys(BITRIX_LOGIN)
+                elem = WebDriverWait(browser, 5).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'Button[data-action="submit"]')))
+                time.sleep(1)
+                elem.click()
 
-            elem = WebDriverWait(browser, 15).until(
-                EC.presence_of_element_located((By.ID, "password")))
-            elem.send_keys(BITRIX_PASSWORD)
-            elem = browser.find_element(
-                By.CSS_SELECTOR, 'Button[data-action="submit"]')
-            elem.click()
+                elem = WebDriverWait(browser, 15).until(
+                    EC.presence_of_element_located((By.ID, "password")))
+                elem.send_keys(BITRIX_PASSWORD)
+                elem = browser.find_element(
+                    By.CSS_SELECTOR, 'Button[data-action="submit"]')
+                elem.click()
 
-            # ждем пока полностью загрузится таблица
-            WebDriverWait(browser, 30).until(
-                EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'tr[data-type="task-template"]')))
+                # ждем пока полностью загрузится таблица
+                WebDriverWait(browser, 30).until(
+                    EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'tr[data-type="task-template"]')))
 
-            for template_number in template_list:
-                url_template = URGENT_TASK_TEMPLATE_URL + \
-                    URL_TAIL + str(template_number) + '/'
-                browser.get(url_template)
+                for template_number in template_list:
+                    url_template = URGENT_TASK_TEMPLATE_URL + \
+                        URL_TAIL + str(template_number) + '/'
+                    browser.get(url_template)
 
-                # удаляем текущего ответственного
-                responsible = WebDriverWait(browser, 30).until(EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, 'div[data-block-name="SE_RESPONSIBLE"]')))
-                responsible.find_element(By.CSS_SELECTOR, 'span[title="Отменить выбор"]').click()
+                    # удаляем текущего ответственного
+                    responsible = WebDriverWait(browser, 30).until(EC.presence_of_element_located(
+                        (By.CSS_SELECTOR, 'div[data-block-name="SE_RESPONSIBLE"]')))
+                    time.sleep(1)
+                    elem = WebDriverWait(browser, 30).until(EC.presence_of_element_located(
+                        (By.CSS_SELECTOR, 'span[title="Отменить выбор"]')))
+                    elem.click()
 
-                # получаем список сотрудников, которых можно назначить ответственным
-                employees = WebDriverWait(browser, 30).until(EC.presence_of_element_located(
-                    (By.CLASS_NAME, 'ui-selector-popup-container')))
-                employees = browser.find_element(By.CLASS_NAME, 'ui-selector-popup-container')
+                    # получаем список сотрудников, которых можно назначить ответственным
+                    employees = WebDriverWait(browser, 30).until(EC.presence_of_element_located(
+                        (By.CLASS_NAME, 'ui-selector-popup-container')))
+                    employees = browser.find_element(By.CLASS_NAME, 'ui-selector-popup-container')
+                    employee_list = employees.find_elements(By.CLASS_NAME, 'ui-selector-item-box')
 
-                employee_list = employees.find_elements(By.CLASS_NAME, 'ui-selector-item-box')
-
-                # находим заданного сотрудника
-                for cur_employee in employee_list:
-                    if cur_employee.find_element(By.TAG_NAME, 'a').get_attribute('href') == id_string:
-                        cur_employee.click()
-                        break
-
-                browser.find_element(By.ID, 'ui-button-panel-save').click()  # сохранить
-            text = f"Ответственным назначен: {employee['LAST_NAME']} {employee['NAME']}"
-        except Exception as err:
-            text = repr(err)
-        finally:
-            browser.quit()
-        message = TextMessage(text=text)
-        viber.send_messages(sender_id, [message])
-        return
+                    # находим заданного сотрудника
+                    for cur_employee in employee_list:
+                        if cur_employee.find_element(By.TAG_NAME, 'a').get_attribute('href') == id_string:
+                            cur_employee.click()
+                            break
+                    browser.find_element(By.ID, 'ui-button-panel-save').click()  # сохранить
+                text = f"Ответственным назначен: {employee['LAST_NAME']} {employee['NAME']}"
+            except Exception as err:
+                text = repr(err)
+            finally:
+                browser.quit()
+            message = TextMessage(text=text)
+            viber.send_messages(sender_id, [message])
+            return
 
     def answer(viber_message, sender_id):
         incoming_text = viber_message.text.lower().strip(' ?.')
