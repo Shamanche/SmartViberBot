@@ -65,7 +65,7 @@ def get_tech_employee_list():
     # отбираем сотрудников технического отдела
     employee_tech = [i for i in employee_all if in_tech_department(i)]
     print('Список сотрудников получен.')
-    print(employee_tech[0])
+    print(f'Получено {len(employee_tech)} сотрудников')
     return employee_tech
 
 def set_tech_employee_list(sender_id):

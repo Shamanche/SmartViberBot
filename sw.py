@@ -10,6 +10,6 @@ viber = Api(BotConfiguration(
     avatar='',
     auth_token=AUTH_TOKEN
 ))
-viber.set_webhook('https://smart-viber-bot.herokuapp.com')
+viber.set_webhook('https://a004-176-193-71-19.ngrok.io')
 
 print('Done.')
